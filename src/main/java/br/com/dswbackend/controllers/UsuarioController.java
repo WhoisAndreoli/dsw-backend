@@ -6,10 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.dswbackend.dtos.Login;
+import br.com.dswbackend.dtos.RecuperarSenha;
+import br.com.dswbackend.dtos.TrocarSenha;
 import br.com.dswbackend.dtos.UsuarioRequest;
 import br.com.dswbackend.dtos.UsuarioResponse;
 import br.com.dswbackend.services.IUsuarioService;
@@ -39,5 +43,20 @@ public class UsuarioController {
   @GetMapping("/get")
   public List<UsuarioResponse> get() {
     return service.get();
+  }
+
+  @PostMapping("/forgot")
+  public String forgotPassword(@Valid @RequestBody Login login) {
+    return service.forgotPassword(login);
+  }
+
+  @PostMapping("/reset")
+  public UsuarioResponse createNewPassword(@Valid @RequestBody RecuperarSenha form) {
+    return service.createNewPassword(form);
+  }
+
+  @PutMapping("/change")
+  public UsuarioResponse changePassword(@RequestBody TrocarSenha form) {
+    return service.changePassword(form);
   }
 }

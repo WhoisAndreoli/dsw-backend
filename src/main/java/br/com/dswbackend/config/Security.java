@@ -4,7 +4,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,8 +23,9 @@ public class Security {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
         .authorizeHttpRequests(auth -> {
-          auth.requestMatchers("api/v1/usuario/create", "api/v1/usuario/login").permitAll();
-          auth.requestMatchers(HttpMethod.GET).authenticated();
+          auth.requestMatchers("api/v1/usuario/create", "api/v1/usuario/login", "api/v1/usuario/forgot",
+              "api/v1/usuario/reset").permitAll();
+          auth.anyRequest().authenticated();
         })
         .addFilterBefore(new AuthFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))),
             UsernamePasswordAuthenticationFilter.class)

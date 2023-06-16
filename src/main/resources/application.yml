@@ -4,4 +4,3 @@ spring:
       host: localhost
       database: demo
       port: 27017
-

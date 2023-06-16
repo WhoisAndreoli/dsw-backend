@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -73,7 +74,9 @@ public class AuthFilter extends OncePerRequestFilter {
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-    return request.getServletPath().contains("/api/v1/usuario/create");
+    return request.getServletPath().contains("/api/v1/usuario/create")
+        || request.getServletPath().contains("/api/v1/usuario/forgot")
+        || request.getServletPath().contains("/api/v1/usuario/reset");
   }
 
 }

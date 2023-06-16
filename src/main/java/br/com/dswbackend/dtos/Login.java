@@ -1,5 +1,8 @@
 package br.com.dswbackend.dtos;
 
-public record Login(String email, String senha) {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record Login(@NotBlank @Email String email, String senha) {
 
 }
