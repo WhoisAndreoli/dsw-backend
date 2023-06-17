@@ -11,7 +11,7 @@ import br.com.dswbackend.dtos.UsuarioRequest;
 import br.com.dswbackend.dtos.UsuarioResponse;
 
 public interface IUsuarioService extends UserDetailsService {
-  UsuarioResponse create(UsuarioRequest usuario) throws IllegalAccessException;
+  UsuarioResponse create(UsuarioRequest usuario);
 
   List<UsuarioResponse> get();
 

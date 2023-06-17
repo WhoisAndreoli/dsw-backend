@@ -30,8 +30,7 @@ public class UsuarioController {
   }
 
   @PostMapping("/create")
-  public ResponseEntity<UsuarioResponse> create(@Valid @RequestBody UsuarioRequest usuario)
-      throws IllegalAccessException {
+  public ResponseEntity<UsuarioResponse> create(@Valid @RequestBody UsuarioRequest usuario) {
     return new ResponseEntity<>(service.create(usuario), HttpStatus.CREATED);
   }
 

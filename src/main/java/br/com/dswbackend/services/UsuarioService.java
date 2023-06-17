@@ -8,7 +8,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import br.com.dswbackend.dtos.RecuperarSenha;
 import br.com.dswbackend.dtos.TrocarSenha;
 import br.com.dswbackend.dtos.UsuarioRequest;
 import br.com.dswbackend.dtos.UsuarioResponse;
+import br.com.dswbackend.exceptions.ErrorException;
 import br.com.dswbackend.model.Usuario;
 import br.com.dswbackend.repositories.UsuarioRepository;
 
@@ -32,9 +32,9 @@ public class UsuarioService implements IUsuarioService {
   }
 
   @Override
-  public UsuarioResponse create(UsuarioRequest usuario) throws IllegalAccessException {
+  public UsuarioResponse create(UsuarioRequest usuario) {
     if (repository.findByEmail(usuario.email()).isPresent()) {
-      throw new IllegalAccessException("email ja utilizado!");
+      throw new ErrorException("O email já está sendo utilizado");
     }
     Usuario newUsuario = new Usuario(usuario);
     newUsuario.setSenha(encoder.encode(newUsuario.getSenha()));
@@ -47,16 +47,16 @@ public class UsuarioService implements IUsuarioService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String username) {
     Usuario user = repository.findByEmail(username)
-        .orElseThrow(() -> new UsernameNotFoundException("usuario nao encontrado"));
+        .orElseThrow(() -> new ErrorException("Usuario não cadastrado"));
     return new User(user.getEmail(), user.getSenha(), AuthorityUtils.NO_AUTHORITIES);
   }
 
   @Override
   public String forgotPassword(Login login) {
     if (repository.findByEmail(login.email()).isEmpty()) {
-      throw new IllegalAccessError("usuario nao cadastrado");
+      throw new ErrorException("Usuario não cadastrado");
     }
     String expiracao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(1).toString().substring(0, 35);
 
@@ -69,14 +69,14 @@ public class UsuarioService implements IUsuarioService {
   @Override
   public UsuarioResponse createNewPassword(RecuperarSenha form) {
     Usuario user = repository.findByEmail(form.email())
-        .orElseThrow(() -> new IllegalAccessError("usuario nao encontrado"));
+        .orElseThrow(() -> new ErrorException("Usuario não cadastrado"));
 
     if (ZonedDateTime.parse(form.expiracao()).isBefore(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")))) {
-      throw new IllegalAccessError("token expirado");
+      throw new ErrorException("Link expirado");
     }
 
     if (!form.senha().equals(form.senhaRepetida())) {
-      throw new IllegalAccessError("as senhas são diferentes");
+      throw new ErrorException("As senhas precisam ser iguais");
     }
 
     user.setSenha(encoder.encode(form.senhaRepetida()));
@@ -87,19 +87,18 @@ public class UsuarioService implements IUsuarioService {
   public UsuarioResponse changePassword(TrocarSenha form) {
     String principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
-    Usuario user = repository.findByEmail(principal).orElseThrow(() -> new IllegalAccessError("erro"));
+    Usuario user = repository.findByEmail(principal).orElseThrow(() -> new ErrorException(""));
 
     if (!encoder.matches(form.senhaAntiga(), user.getSenha())) {
-      throw new IllegalAccessError("senha antiga incorreta");
+      throw new ErrorException("Senha antiga incorreta");
     }
 
     if (!form.senhaNova().equals(form.senhaRepetida())) {
-      throw new IllegalAccessError("as senhas são diferentes");
+      throw new ErrorException("As senhas precisam ser iguais");
     }
 
     user.setSenha(encoder.encode(form.senhaNova()));
     return UsuarioResponse.of(repository.save(user));
-
   }
 
 }

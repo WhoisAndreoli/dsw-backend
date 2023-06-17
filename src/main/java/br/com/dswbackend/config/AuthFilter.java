@@ -6,9 +6,10 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +23,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.dswbackend.dtos.Login;
+import br.com.dswbackend.exceptions.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,16 +42,23 @@ public class AuthFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
 
     if (request.getServletPath().contains("/api/v1/usuario/login")) {
-      Login login = new ObjectMapper().readValue(request.getInputStream(), Login.class);
-      Authentication auth = authenticationManager
-          .authenticate(UsernamePasswordAuthenticationToken.unauthenticated(login.email(), login.senha()));
-      var user = (User) auth.getPrincipal();
-      String tokenJWT = JWT.create()
-          .withSubject(user.getUsername())
-          .withIssuedAt(Instant.now())
-          .withExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES))
-          .sign(Algorithm.HMAC512("secret"));
-      response.setHeader("Authorization", "Bearer " + tokenJWT);
+      try {
+        Login login = new ObjectMapper().readValue(request.getInputStream(), Login.class);
+        Authentication auth = authenticationManager
+            .authenticate(UsernamePasswordAuthenticationToken.unauthenticated(login.email(), login.senha()));
+        var user = (User) auth.getPrincipal();
+        String tokenJWT = JWT.create()
+            .withSubject(user.getUsername())
+            .withIssuedAt(Instant.now())
+            .withExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES))
+            .sign(Algorithm.HMAC512("secret"));
+        response.setHeader("Authorization", "Bearer " + tokenJWT);
+      } catch (BadCredentialsException e) {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON.toString());
+        response.getWriter().write(new ObjectMapper().writeValueAsString(
+            new ErrorResponse(e.getMessage(), HttpStatus.UNAUTHORIZED.value())));
+      }
       filterChain.doFilter(request, response);
       return;
     }
@@ -63,12 +72,19 @@ public class AuthFilter extends OncePerRequestFilter {
     }
 
     token = token.split(" ")[1];
-
-    JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512("secret")).build();
-    DecodedJWT decoded = jwtVerifier.verify(token);
-    String subject = decoded.getSubject();
-    var auth = UsernamePasswordAuthenticationToken.authenticated(subject, null, NO_AUTHORITIES);
-    SecurityContextHolder.getContext().setAuthentication(auth);
+    try {
+      JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512("secret")).build();
+      DecodedJWT decoded = jwtVerifier.verify(token);
+      String subject = decoded.getSubject();
+      var auth = UsernamePasswordAuthenticationToken.authenticated(subject, null, NO_AUTHORITIES);
+      SecurityContextHolder.getContext().setAuthentication(auth);
+    } catch (Exception e) {
+      response.setStatus(HttpStatus.UNAUTHORIZED.value());
+      response.setContentType(MediaType.APPLICATION_JSON.toString());
+      response.getWriter().write(new ObjectMapper().writeValueAsString(
+          new ErrorResponse("Token inválido", HttpStatus.UNAUTHORIZED.value())));
+      return;
+    }
     filterChain.doFilter(request, response);
   }
 
