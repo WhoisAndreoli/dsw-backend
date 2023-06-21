@@ -23,7 +23,8 @@ public class Security {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
         .authorizeHttpRequests(auth -> {
-          auth.requestMatchers("api/v1/usuario/create", "api/v1/usuario/login", "api/v1/usuario/forgot",
+          auth.requestMatchers("api/v1/usuario/create", "api/v1/usuario/login",
+              "api/v1/usuario/forgot/**",
               "api/v1/usuario/reset").permitAll();
           auth.anyRequest().authenticated();
         })

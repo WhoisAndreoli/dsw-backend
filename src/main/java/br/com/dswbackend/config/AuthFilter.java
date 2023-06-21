@@ -58,6 +58,7 @@ public class AuthFilter extends OncePerRequestFilter {
         response.setContentType(MediaType.APPLICATION_JSON.toString());
         response.getWriter().write(new ObjectMapper().writeValueAsString(
             new ErrorResponse(e.getMessage(), HttpStatus.UNAUTHORIZED.value())));
+        return;
       }
       filterChain.doFilter(request, response);
       return;
@@ -65,9 +66,11 @@ public class AuthFilter extends OncePerRequestFilter {
 
     String token = request.getHeader("Authorization");
 
-    if (token.isBlank() || !token.startsWith("Bearer ")) {
+    if (token == null || token.isBlank() || !token.startsWith("Bearer ")) {
       response.setStatus(HttpStatus.UNAUTHORIZED.value());
-      filterChain.doFilter(request, response);
+      response.setContentType(MediaType.APPLICATION_JSON.toString());
+      response.getWriter().write(new ObjectMapper().writeValueAsString(
+          new ErrorResponse("Token JWT inválido", HttpStatus.UNAUTHORIZED.value())));
       return;
     }
 
