@@ -10,17 +10,19 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import br.com.dswbackend.dtos.Login;
 import br.com.dswbackend.dtos.RecuperarSenha;
 import br.com.dswbackend.dtos.TrocarSenha;
 import br.com.dswbackend.dtos.UsuarioRequest;
 import br.com.dswbackend.dtos.UsuarioResponse;
 import br.com.dswbackend.exceptions.ErrorException;
+import br.com.dswbackend.model.Quadro;
 import br.com.dswbackend.model.Usuario;
 import br.com.dswbackend.repositories.UsuarioRepository;
 
 @Service
+@Transactional
 public class UsuarioService implements IUsuarioService {
 
   private UsuarioRepository repository;
@@ -48,19 +50,18 @@ public class UsuarioService implements IUsuarioService {
 
   @Override
   public UserDetails loadUserByUsername(String username) {
-    Usuario user = repository.findByEmail(username)
-        .orElseThrow(() -> new ErrorException("Usuario não cadastrado"));
+    Usuario user = this.findByEmail(username);
     return new User(user.getEmail(), user.getSenha(), AuthorityUtils.NO_AUTHORITIES);
   }
 
   @Override
-  public String forgotPassword(Login login) {
-    if (repository.findByEmail(login.email()).isEmpty()) {
+  public String forgotPassword(String email) {
+    if (repository.findByEmail(email).isEmpty()) {
       throw new ErrorException("Usuario não cadastrado");
     }
     String expiracao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(1).toString().substring(0, 35);
 
-    return String.format("localhost:8080/api/v1/usuario/reset?expiration=%s&email=%s", expiracao, login.email());
+    return String.format("localhost:8080/api/v1/usuario/reset?expiration=%s&email=%s", expiracao, email);
 
     // TODO - enviar email para o usuario
 
@@ -68,8 +69,7 @@ public class UsuarioService implements IUsuarioService {
 
   @Override
   public UsuarioResponse createNewPassword(RecuperarSenha form) {
-    Usuario user = repository.findByEmail(form.email())
-        .orElseThrow(() -> new ErrorException("Usuario não cadastrado"));
+    Usuario user = this.findByEmail(form.email());
 
     if (ZonedDateTime.parse(form.expiracao()).isBefore(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")))) {
       throw new ErrorException("Link expirado");
@@ -87,7 +87,7 @@ public class UsuarioService implements IUsuarioService {
   public UsuarioResponse changePassword(TrocarSenha form) {
     String principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
-    Usuario user = repository.findByEmail(principal).orElseThrow(() -> new ErrorException(""));
+    Usuario user = this.findByEmail(principal);
 
     if (!encoder.matches(form.senhaAntiga(), user.getSenha())) {
       throw new ErrorException("Senha antiga incorreta");
@@ -101,4 +101,13 @@ public class UsuarioService implements IUsuarioService {
     return UsuarioResponse.of(repository.save(user));
   }
 
+  @Override
+  public void addQuadro(Quadro quadro, Usuario usuario) {
+    usuario.getQuadros().add(quadro);
+    repository.save(usuario);
+  }
+
+  public Usuario findByEmail(String email) {
+    return repository.findByEmail(email).orElseThrow(() -> new ErrorException("Usuario não cadastrado"));
+  }
 }

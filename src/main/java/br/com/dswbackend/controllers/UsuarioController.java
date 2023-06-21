@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.dswbackend.dtos.Login;
 import br.com.dswbackend.dtos.RecuperarSenha;
 import br.com.dswbackend.dtos.TrocarSenha;
 import br.com.dswbackend.dtos.UsuarioRequest;
@@ -44,9 +44,9 @@ public class UsuarioController {
     return service.get();
   }
 
-  @PostMapping("/forgot")
-  public String forgotPassword(@Valid @RequestBody Login login) {
-    return service.forgotPassword(login);
+  @PostMapping("/forgot/{email}")
+  public String forgotPassword(@PathVariable String email) {
+    return service.forgotPassword(email);
   }
 
   @PostMapping("/reset")

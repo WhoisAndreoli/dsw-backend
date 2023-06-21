@@ -1,7 +1,13 @@
 package br.com.dswbackend.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import br.com.dswbackend.dtos.UsuarioRequest;
 
@@ -13,11 +19,15 @@ public class Usuario {
   private String email;
   private String senha;
   private String nome;
+  @DBRef
+  @JsonManagedReference
+  private List<Quadro> quadros;
 
   public Usuario(UsuarioRequest usuario) {
     this.email = usuario.email();
     this.senha = usuario.senha();
     this.nome = usuario.nome();
+    this.quadros = new ArrayList<>();
   }
 
   public Usuario() {
@@ -53,6 +63,14 @@ public class Usuario {
 
   public void setNome(String nome) {
     this.nome = nome;
+  }
+
+  public List<Quadro> getQuadros() {
+    return quadros;
+  }
+
+  public void setQuadros(List<Quadro> quadros) {
+    this.quadros = quadros;
   }
 
 }
