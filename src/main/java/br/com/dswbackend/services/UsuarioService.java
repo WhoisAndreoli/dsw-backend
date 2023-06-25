@@ -27,10 +27,12 @@ public class UsuarioService implements IUsuarioService {
 
   private UsuarioRepository repository;
   private PasswordEncoder encoder;
+  private IEmailService emailService;
 
-  public UsuarioService(UsuarioRepository repository, PasswordEncoder encoder) {
+  public UsuarioService(UsuarioRepository repository, PasswordEncoder encoder, IEmailService emailService) {
     this.repository = repository;
     this.encoder = encoder;
+    this.emailService = emailService;
   }
 
   @Override
@@ -61,10 +63,9 @@ public class UsuarioService implements IUsuarioService {
     }
     String expiracao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(1).toString().substring(0, 35);
 
-    return String.format("localhost:8080/api/v1/usuario/reset?expiration=%s&email=%s", expiracao, email);
-
-    // TODO - enviar email para o usuario
-
+    String text = String.format("localhost:3000/api/v1/usuario/reset?expiration=%s&email=%s", expiracao, email);
+    emailService.sendEmail(email, text);
+    return text;
   }
 
   @Override
@@ -109,5 +110,11 @@ public class UsuarioService implements IUsuarioService {
 
   public Usuario findByEmail(String email) {
     return repository.findByEmail(email).orElseThrow(() -> new ErrorException("Usuario não cadastrado"));
+  }
+
+  @Override
+  public void addFavorite(Usuario usuario, Quadro quadro) {
+    usuario.getFavoritos().add(quadro);
+    repository.save(usuario);
   }
 }
