@@ -25,4 +25,6 @@ public interface IUsuarioService extends UserDetailsService {
   void addQuadro(Quadro quadro, Usuario usuario);
 
   Usuario findByEmail(String email);
+
+  void addFavorite(Usuario usuario, Quadro quadro);
 }

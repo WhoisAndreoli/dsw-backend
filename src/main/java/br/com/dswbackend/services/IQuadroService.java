@@ -20,4 +20,6 @@ public interface IQuadroService {
   void addLista(Lista newLista, Quadro quadro);
 
   Quadro findById(String id);
+
+  void favorite(String id);
 }

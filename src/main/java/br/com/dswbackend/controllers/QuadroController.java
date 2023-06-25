@@ -44,4 +44,9 @@ public class QuadroController {
   public List<QuadroResponse> get() {
     return service.get();
   }
+
+  @PostMapping("/favorite/{id}")
+  public void favorite(@PathVariable String id) {
+    service.favorite(id);
+  }
 }

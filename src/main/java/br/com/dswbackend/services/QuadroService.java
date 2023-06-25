@@ -71,6 +71,15 @@ public class QuadroService implements IQuadroService {
     repository.save(quadro);
   }
 
+  @Override
+  public void favorite(String id) {
+    String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Usuario usuario = usuarioService.findByEmail(principal);
+    Quadro quadro = this.findById(id);
+    usuarioService.addFavorite(usuario, quadro);
+  }
+
+  @Override
   public Quadro findById(String id) {
     return repository.findById(id).orElseThrow(() -> new ErrorException("Quadro não cadastrado"));
   }

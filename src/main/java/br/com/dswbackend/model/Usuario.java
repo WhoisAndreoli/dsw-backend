@@ -22,12 +22,16 @@ public class Usuario {
   @DBRef
   @JsonManagedReference
   private List<Quadro> quadros;
+  @DBRef
+  @JsonManagedReference
+  private List<Quadro> favoritos;
 
   public Usuario(UsuarioRequest usuario) {
     this.email = usuario.email();
     this.senha = usuario.senha();
     this.nome = usuario.nome();
     this.quadros = new ArrayList<>();
+    this.favoritos = new ArrayList<>();
   }
 
   public Usuario() {
@@ -71,6 +75,14 @@ public class Usuario {
 
   public void setQuadros(List<Quadro> quadros) {
     this.quadros = quadros;
+  }
+
+  public List<Quadro> getFavoritos() {
+    return favoritos;
+  }
+
+  public void setFavoritos(List<Quadro> favoritos) {
+    this.favoritos = favoritos;
   }
 
 }
