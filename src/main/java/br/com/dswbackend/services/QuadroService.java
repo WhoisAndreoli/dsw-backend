@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.dswbackend.dtos.Compartilhamento;
 import br.com.dswbackend.dtos.QuadroRequest;
 import br.com.dswbackend.dtos.QuadroResponse;
 import br.com.dswbackend.exceptions.ErrorException;
@@ -30,7 +31,8 @@ public class QuadroService implements IQuadroService {
   public QuadroResponse create(QuadroRequest newQuadro) {
     String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Usuario usuario = usuarioService.findByEmail(principal);
-    Quadro quadro = new Quadro(newQuadro, usuario);
+    Quadro quadro = new Quadro(newQuadro);
+    quadro.getUsuarios().add(usuario);
     quadro = repository.save(quadro);
     usuarioService.addQuadro(quadro, usuario);
     return QuadroResponse.of(quadro);
@@ -65,7 +67,7 @@ public class QuadroService implements IQuadroService {
     return repository.findAll().stream().map(QuadroResponse::of).toList();
   }
 
-  @Override
+  @Override // TODO - remover isso dps
   public void addLista(Lista newLista, Quadro quadro) {
     quadro.getListas().add(newLista);
     repository.save(quadro);
@@ -82,6 +84,17 @@ public class QuadroService implements IQuadroService {
   @Override
   public Quadro findById(String id) {
     return repository.findById(id).orElseThrow(() -> new ErrorException("Quadro não cadastrado"));
+  }
+
+  @Override
+  public void share(Compartilhamento comp) {
+    Usuario usuario = usuarioService.findByEmail(comp.email());
+    Quadro quadro = this.findById(comp.quadroID());
+    if (comp.editavel()) {
+      quadro.getUsuarios().add(usuario);
+    }
+    usuarioService.addShare(usuario, quadro);
+    repository.save(quadro);
   }
 
 }

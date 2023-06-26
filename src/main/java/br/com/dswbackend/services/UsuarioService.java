@@ -117,4 +117,11 @@ public class UsuarioService implements IUsuarioService {
     usuario.getFavoritos().add(quadro);
     repository.save(usuario);
   }
+
+  @Override
+  public void addShare(Usuario usuario, Quadro quadro) {
+    usuario.getCompartilhado().add(quadro);
+    repository.save(usuario);
+  }
+
 }

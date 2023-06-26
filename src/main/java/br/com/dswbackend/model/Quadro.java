@@ -22,16 +22,16 @@ public class Quadro {
   private String corTexto;
   @DBRef
   @JsonBackReference
-  private Usuario usuario;
+  private List<Usuario> usuarios;
   @DBRef
   @JsonManagedReference
   private List<Lista> listas;
 
-  public Quadro(QuadroRequest quadro, Usuario usuario) {
+  public Quadro(QuadroRequest quadro) {
     this.titulo = quadro.titulo();
     this.corFundo = quadro.corFundo();
     this.corTexto = quadro.corTexto();
-    this.usuario = usuario;
+    this.usuarios = new ArrayList<>();
     this.listas = new ArrayList<>();
   }
 
@@ -78,12 +78,12 @@ public class Quadro {
     this.listas = listas;
   }
 
-  public Usuario getUsuario() {
-    return usuario;
+  public List<Usuario> getUsuarios() {
+    return usuarios;
   }
 
-  public void setUsuario(Usuario usuario) {
-    this.usuario = usuario;
+  public void setUsuario(List<Usuario> usuarios) {
+    this.usuarios = usuarios;
   }
 
 }

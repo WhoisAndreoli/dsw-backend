@@ -2,6 +2,7 @@ package br.com.dswbackend.services;
 
 import java.util.List;
 
+import br.com.dswbackend.dtos.Compartilhamento;
 import br.com.dswbackend.dtos.QuadroRequest;
 import br.com.dswbackend.dtos.QuadroResponse;
 import br.com.dswbackend.model.Lista;
@@ -22,4 +23,6 @@ public interface IQuadroService {
   Quadro findById(String id);
 
   void favorite(String id);
+
+  void share(Compartilhamento comp);
 }

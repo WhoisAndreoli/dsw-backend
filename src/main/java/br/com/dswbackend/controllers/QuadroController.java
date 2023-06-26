@@ -2,6 +2,7 @@ package br.com.dswbackend.controllers;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.dswbackend.dtos.Compartilhamento;
 import br.com.dswbackend.dtos.QuadroRequest;
 import br.com.dswbackend.dtos.QuadroResponse;
 import br.com.dswbackend.services.IQuadroService;
+import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/v1/quadro")
 public class QuadroController {
@@ -49,4 +53,10 @@ public class QuadroController {
   public void favorite(@PathVariable String id) {
     service.favorite(id);
   }
+
+  @PostMapping("/share")
+  public void share(@Valid @RequestBody Compartilhamento comp) {
+    service.share(comp);
+  }
+
 }
