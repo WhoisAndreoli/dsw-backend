@@ -8,8 +8,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import br.com.dswbackend.dtos.QuadroRequest;
 
 @Document
@@ -23,8 +21,6 @@ public class Quadro {
   @DBRef
   @JsonBackReference
   private List<Usuario> usuarios;
-  @DBRef
-  @JsonManagedReference
   private List<Lista> listas;
 
   public Quadro(QuadroRequest quadro) {

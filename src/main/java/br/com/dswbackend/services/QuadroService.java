@@ -1,6 +1,7 @@
 package br.com.dswbackend.services;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import br.com.dswbackend.dtos.Compartilhamento;
 import br.com.dswbackend.dtos.QuadroRequest;
 import br.com.dswbackend.dtos.QuadroResponse;
 import br.com.dswbackend.exceptions.ErrorException;
-import br.com.dswbackend.model.Lista;
 import br.com.dswbackend.model.Quadro;
 import br.com.dswbackend.model.Usuario;
 import br.com.dswbackend.repositories.QuadroRepository;
@@ -41,7 +41,7 @@ public class QuadroService implements IQuadroService {
   @Override
   public QuadroResponse update(QuadroRequest newQuadro, String id) {
     Quadro quadro = this.findById(id);
-
+    verifyPermission(quadro);
     if (!newQuadro.corFundo().isBlank()) {
       quadro.setCorFundo(newQuadro.corFundo());
     }
@@ -51,7 +51,9 @@ public class QuadroService implements IQuadroService {
     if (!newQuadro.titulo().isBlank()) {
       quadro.setTitulo(newQuadro.titulo());
     }
-
+    if (newQuadro.listas() != null) {
+      quadro.setListas(newQuadro.listas());
+    }
     quadro = repository.save(quadro);
     return QuadroResponse.of(quadro);
   }
@@ -65,12 +67,6 @@ public class QuadroService implements IQuadroService {
   @Override
   public List<QuadroResponse> get() {
     return repository.findAll().stream().map(QuadroResponse::of).toList();
-  }
-
-  @Override // TODO - remover isso dps
-  public void addLista(Lista newLista, Quadro quadro) {
-    quadro.getListas().add(newLista);
-    repository.save(quadro);
   }
 
   @Override
@@ -95,6 +91,16 @@ public class QuadroService implements IQuadroService {
     }
     usuarioService.addShare(usuario, quadro);
     repository.save(quadro);
+  }
+
+  @Override
+  public void verifyPermission(Quadro quadro) {
+    String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    quadro.getUsuarios().stream().forEach(u -> {
+      if (!Objects.equals(u.getEmail(), principal)) {
+        throw new ErrorException("O usuario não tem permissão para editar o quatro");
+      }
+    });
   }
 
 }

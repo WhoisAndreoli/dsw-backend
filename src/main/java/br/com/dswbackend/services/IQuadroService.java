@@ -5,7 +5,6 @@ import java.util.List;
 import br.com.dswbackend.dtos.Compartilhamento;
 import br.com.dswbackend.dtos.QuadroRequest;
 import br.com.dswbackend.dtos.QuadroResponse;
-import br.com.dswbackend.model.Lista;
 import br.com.dswbackend.model.Quadro;
 
 public interface IQuadroService {
@@ -18,11 +17,11 @@ public interface IQuadroService {
 
   List<QuadroResponse> get();
 
-  void addLista(Lista newLista, Quadro quadro);
-
   Quadro findById(String id);
 
   void favorite(String id);
 
   void share(Compartilhamento comp);
+
+  void verifyPermission(Quadro quadro);
 }
