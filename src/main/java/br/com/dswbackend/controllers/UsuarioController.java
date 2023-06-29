@@ -20,7 +20,6 @@ import br.com.dswbackend.dtos.UsuarioResponse;
 import br.com.dswbackend.services.IUsuarioService;
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/v1/usuario")
 public class UsuarioController {

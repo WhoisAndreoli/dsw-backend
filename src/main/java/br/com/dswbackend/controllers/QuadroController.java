@@ -18,7 +18,6 @@ import br.com.dswbackend.dtos.QuadroResponse;
 import br.com.dswbackend.services.IQuadroService;
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/v1/quadro")
 public class QuadroController {
