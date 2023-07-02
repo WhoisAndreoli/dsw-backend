@@ -14,7 +14,7 @@ import br.com.dswbackend.model.Usuario;
 public interface IUsuarioService extends UserDetailsService {
   UsuarioResponse create(UsuarioRequest usuario);
 
-  List<UsuarioResponse> get();
+  UsuarioResponse get();
 
   String forgotPassword(String email);
 

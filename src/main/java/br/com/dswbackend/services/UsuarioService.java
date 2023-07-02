@@ -46,8 +46,9 @@ public class UsuarioService implements IUsuarioService {
   }
 
   @Override
-  public List<UsuarioResponse> get() {
-    return repository.findAll().stream().map(UsuarioResponse::of).toList();
+  public UsuarioResponse get() {
+    String principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    return UsuarioResponse.of(this.findByEmail(principal));
   }
 
   @Override
