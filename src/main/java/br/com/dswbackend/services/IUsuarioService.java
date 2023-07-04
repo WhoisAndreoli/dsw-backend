@@ -1,7 +1,5 @@
 package br.com.dswbackend.services;
 
-import java.util.List;
-
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import br.com.dswbackend.dtos.RecuperarSenha;

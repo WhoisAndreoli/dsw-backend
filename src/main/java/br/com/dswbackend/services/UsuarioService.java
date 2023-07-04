@@ -2,7 +2,6 @@ package br.com.dswbackend.services;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,7 +63,7 @@ public class UsuarioService implements IUsuarioService {
     }
     String expiracao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(1).toString().substring(0, 35);
 
-    String text = String.format("localhost:3000/api/v1/usuario/reset?expiration=%s&email=%s", expiracao, email);
+    String text = String.format("localhost:8080/login/reset?expiration=%s&email=%s", expiracao, email);
     emailService.sendEmail(email, text);
     return text;
   }

@@ -28,12 +28,12 @@ public class QuadroController {
   }
 
   @PostMapping("/create")
-  public QuadroResponse create(@RequestBody QuadroRequest quadro) {
+  public QuadroResponse create(@Valid @RequestBody QuadroRequest quadro) {
     return service.create(quadro);
   }
 
   @PutMapping("/update/{id}")
-  public QuadroResponse update(@PathVariable String id, @RequestBody QuadroRequest quadro) {
+  public QuadroResponse update(@PathVariable String id, @Valid @RequestBody QuadroRequest quadro) {
     return service.update(quadro, id);
   }
 

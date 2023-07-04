@@ -33,8 +33,8 @@ public class UsuarioController {
   }
 
   @PostMapping("/login")
-  public void login() {
-    // path para fazer login
+  public ResponseEntity<Void> login() {
+    return ResponseEntity.ok().body(null);
   }
 
   @GetMapping("/get")
@@ -53,7 +53,7 @@ public class UsuarioController {
   }
 
   @PutMapping("/change")
-  public UsuarioResponse changePassword(@RequestBody TrocarSenha form) {
+  public UsuarioResponse changePassword(@Valid @RequestBody TrocarSenha form) {
     return service.changePassword(form);
   }
 }
