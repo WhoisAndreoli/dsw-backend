@@ -10,10 +10,10 @@ import br.com.dswbackend.model.Usuario;
 
 public record QuadroResponse(String id, String corFundo, String corTexto, String titulo,
     @JsonIgnoreProperties( {
-        "quadros", "favoritos", "compartilhado" }) List<Usuario> usuarios,
+        "quadros", "favoritos", "compartilhado", "colecoes" }) Usuario usuario,
     List<Lista> listas){
   public static QuadroResponse of(Quadro quadro) {
     return new QuadroResponse(quadro.getId(), quadro.getCorFundo(), quadro.getCorTexto(),
-        quadro.getTitulo(), quadro.getUsuarios(), quadro.getListas());
+        quadro.getTitulo(), quadro.getUsuario(), quadro.getListas());
   }
 }

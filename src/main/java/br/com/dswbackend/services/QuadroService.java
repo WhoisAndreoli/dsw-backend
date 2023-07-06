@@ -1,16 +1,16 @@
 package br.com.dswbackend.services;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.dswbackend.dtos.Compartilhamento;
+import br.com.dswbackend.dtos.CompartilhamentoDTO;
 import br.com.dswbackend.dtos.QuadroRequest;
 import br.com.dswbackend.dtos.QuadroResponse;
 import br.com.dswbackend.exceptions.ErrorException;
+import br.com.dswbackend.model.Compartilhamento;
 import br.com.dswbackend.model.Quadro;
 import br.com.dswbackend.model.Usuario;
 import br.com.dswbackend.repositories.QuadroRepository;
@@ -31,8 +31,7 @@ public class QuadroService implements IQuadroService {
   public QuadroResponse create(QuadroRequest newQuadro) {
     String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Usuario usuario = usuarioService.findByEmail(principal);
-    Quadro quadro = new Quadro(newQuadro);
-    quadro.getUsuarios().add(usuario);
+    Quadro quadro = new Quadro(newQuadro, usuario);
     quadro = repository.save(quadro);
     usuarioService.addQuadro(quadro, usuario);
     return QuadroResponse.of(quadro);
@@ -41,7 +40,6 @@ public class QuadroService implements IQuadroService {
   @Override
   public QuadroResponse update(QuadroRequest newQuadro, String id) {
     Quadro quadro = this.findById(id);
-    verifyPermission(quadro);
     if (!newQuadro.corFundo().isBlank()) {
       quadro.setCorFundo(newQuadro.corFundo());
     }
@@ -83,24 +81,11 @@ public class QuadroService implements IQuadroService {
   }
 
   @Override
-  public void share(Compartilhamento comp) {
+  public void share(CompartilhamentoDTO comp) {
     Usuario usuario = usuarioService.findByEmail(comp.email());
     Quadro quadro = this.findById(comp.quadroID());
-    if (comp.editavel()) {
-      quadro.getUsuarios().add(usuario);
-    }
-    usuarioService.addShare(usuario, quadro);
-    repository.save(quadro);
-  }
-
-  @Override
-  public void verifyPermission(Quadro quadro) {
-    String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    quadro.getUsuarios().stream().forEach(u -> {
-      if (!Objects.equals(u.getEmail(), principal)) {
-        throw new ErrorException("O usuario não tem permissão para editar o quatro");
-      }
-    });
+    Compartilhamento compartilhamento = new Compartilhamento(quadro, comp.editavel());
+    usuarioService.addShare(usuario, compartilhamento);
   }
 
 }

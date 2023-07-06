@@ -2,7 +2,7 @@ package br.com.dswbackend.services;
 
 import java.util.List;
 
-import br.com.dswbackend.dtos.Compartilhamento;
+import br.com.dswbackend.dtos.CompartilhamentoDTO;
 import br.com.dswbackend.dtos.QuadroRequest;
 import br.com.dswbackend.dtos.QuadroResponse;
 import br.com.dswbackend.model.Quadro;
@@ -21,7 +21,6 @@ public interface IQuadroService {
 
   void favorite(String id);
 
-  void share(Compartilhamento comp);
+  void share(CompartilhamentoDTO comp);
 
-  void verifyPermission(Quadro quadro);
 }

@@ -20,14 +20,14 @@ public class Quadro {
   private String corTexto;
   @DBRef
   @JsonBackReference
-  private List<Usuario> usuarios;
+  private Usuario usuario;
   private List<Lista> listas;
 
-  public Quadro(QuadroRequest quadro) {
+  public Quadro(QuadroRequest quadro, Usuario usuario) {
     this.titulo = quadro.titulo();
     this.corFundo = quadro.corFundo();
     this.corTexto = quadro.corTexto();
-    this.usuarios = new ArrayList<>();
+    this.usuario = usuario;
     this.listas = new ArrayList<>();
   }
 
@@ -74,12 +74,12 @@ public class Quadro {
     this.listas = listas;
   }
 
-  public List<Usuario> getUsuarios() {
-    return usuarios;
+  public Usuario getUsuario() {
+    return usuario;
   }
 
-  public void setUsuario(List<Usuario> usuarios) {
-    this.usuarios = usuarios;
+  public void setUsuario(Usuario usuario) {
+    this.usuario = usuario;
   }
 
 }

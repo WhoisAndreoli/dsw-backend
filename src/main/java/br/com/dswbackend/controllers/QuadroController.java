@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.dswbackend.dtos.Compartilhamento;
+import br.com.dswbackend.dtos.CompartilhamentoDTO;
 import br.com.dswbackend.dtos.QuadroRequest;
 import br.com.dswbackend.dtos.QuadroResponse;
 import br.com.dswbackend.services.IQuadroService;
@@ -53,7 +53,7 @@ public class QuadroController {
   }
 
   @PostMapping("/share")
-  public void share(@Valid @RequestBody Compartilhamento comp) {
+  public void share(@Valid @RequestBody CompartilhamentoDTO comp) {
     service.share(comp);
   }
 
