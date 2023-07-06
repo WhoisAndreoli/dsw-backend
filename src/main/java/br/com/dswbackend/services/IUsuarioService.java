@@ -2,10 +2,12 @@ package br.com.dswbackend.services;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import br.com.dswbackend.dtos.ColecaoDTO;
 import br.com.dswbackend.dtos.RecuperarSenha;
 import br.com.dswbackend.dtos.TrocarSenha;
 import br.com.dswbackend.dtos.UsuarioRequest;
 import br.com.dswbackend.dtos.UsuarioResponse;
+import br.com.dswbackend.model.Compartilhamento;
 import br.com.dswbackend.model.Quadro;
 import br.com.dswbackend.model.Usuario;
 
@@ -26,5 +28,7 @@ public interface IUsuarioService extends UserDetailsService {
 
   void addFavorite(Usuario usuario, Quadro quadro);
 
-  void addShare(Usuario usuario, Quadro quadro);
+  void addShare(Usuario usuario, Compartilhamento comp);
+
+  UsuarioResponse collection(ColecaoDTO colecao);
 }

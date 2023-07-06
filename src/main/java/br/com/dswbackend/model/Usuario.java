@@ -25,9 +25,8 @@ public class Usuario {
   @DBRef
   @JsonManagedReference
   private List<Quadro> favoritos;
-  @DBRef
-  @JsonManagedReference
-  private List<Quadro> compartilhado;
+  private List<Compartilhamento> compartilhado;
+  private List<Colecao> colecoes;
 
   public Usuario(UsuarioRequest usuario) {
     this.email = usuario.email();
@@ -36,6 +35,7 @@ public class Usuario {
     this.quadros = new ArrayList<>();
     this.favoritos = new ArrayList<>();
     this.compartilhado = new ArrayList<>();
+    this.colecoes = new ArrayList<>();
   }
 
   public Usuario() {
@@ -89,12 +89,20 @@ public class Usuario {
     this.favoritos = favoritos;
   }
 
-  public List<Quadro> getCompartilhado() {
+  public List<Compartilhamento> getCompartilhado() {
     return compartilhado;
   }
 
-  public void setCompartilhado(List<Quadro> compartilhado) {
+  public void setCompartilhado(List<Compartilhamento> compartilhado) {
     this.compartilhado = compartilhado;
+  }
+
+  public List<Colecao> getColecoes() {
+    return colecoes;
+  }
+
+  public void setColecoes(List<Colecao> colecoes) {
+    this.colecoes = colecoes;
   }
 
 }

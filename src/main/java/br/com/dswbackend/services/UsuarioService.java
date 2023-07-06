@@ -11,11 +11,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.dswbackend.dtos.ColecaoDTO;
 import br.com.dswbackend.dtos.RecuperarSenha;
 import br.com.dswbackend.dtos.TrocarSenha;
 import br.com.dswbackend.dtos.UsuarioRequest;
 import br.com.dswbackend.dtos.UsuarioResponse;
 import br.com.dswbackend.exceptions.ErrorException;
+import br.com.dswbackend.model.Compartilhamento;
 import br.com.dswbackend.model.Quadro;
 import br.com.dswbackend.model.Usuario;
 import br.com.dswbackend.repositories.UsuarioRepository;
@@ -119,9 +121,17 @@ public class UsuarioService implements IUsuarioService {
   }
 
   @Override
-  public void addShare(Usuario usuario, Quadro quadro) {
-    usuario.getCompartilhado().add(quadro);
+  public void addShare(Usuario usuario, Compartilhamento comp) {
+    usuario.getCompartilhado().add(comp);
     repository.save(usuario);
+  }
+
+  @Override
+  public UsuarioResponse collection(ColecaoDTO colecao) {
+    String principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    Usuario user = this.findByEmail(principal);
+    user.setColecoes(colecao.colecoes());
+    return UsuarioResponse.of(repository.save(user));
   }
 
 }

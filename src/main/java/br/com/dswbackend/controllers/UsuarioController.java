@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.dswbackend.dtos.ColecaoDTO;
 import br.com.dswbackend.dtos.RecuperarSenha;
 import br.com.dswbackend.dtos.TrocarSenha;
 import br.com.dswbackend.dtos.UsuarioRequest;
@@ -55,5 +56,10 @@ public class UsuarioController {
   @PutMapping("/change")
   public UsuarioResponse changePassword(@Valid @RequestBody TrocarSenha form) {
     return service.changePassword(form);
+  }
+
+  @PostMapping("/collection")
+  public UsuarioResponse collection(@RequestBody ColecaoDTO colecao) {
+    return service.collection(colecao);
   }
 }
