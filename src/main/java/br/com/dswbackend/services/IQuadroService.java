@@ -23,4 +23,6 @@ public interface IQuadroService {
 
   void share(CompartilhamentoDTO comp);
 
+  void unfavorite(String id);
+
 }

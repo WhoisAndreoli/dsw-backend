@@ -31,4 +31,6 @@ public interface IUsuarioService extends UserDetailsService {
   void addShare(Usuario usuario, Compartilhamento comp);
 
   UsuarioResponse collection(ColecaoDTO colecao);
+
+  void rmvFavorite(Usuario usuario, Quadro quadro);
 }

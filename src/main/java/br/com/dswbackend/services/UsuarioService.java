@@ -2,6 +2,7 @@ package br.com.dswbackend.services;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,7 +66,7 @@ public class UsuarioService implements IUsuarioService {
     }
     String expiracao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(1).toString().substring(0, 35);
 
-    String text = String.format("localhost:8080/login/reset?expiration=%s&email=%s", expiracao, email);
+    String text = String.format("http://localhost:8080/login/reset?expiration=%s&email=%s", expiracao, email);
     emailService.sendEmail(email, text);
     return text;
   }
@@ -116,7 +117,23 @@ public class UsuarioService implements IUsuarioService {
 
   @Override
   public void addFavorite(Usuario usuario, Quadro quadro) {
+    for (Quadro q : usuario.getFavoritos()) {
+      if (Objects.equals(q.getId(), quadro.getId())) {
+        throw new ErrorException("O quadro já esta na lista de favorito");
+      }
+    }
     usuario.getFavoritos().add(quadro);
+    repository.save(usuario);
+  }
+
+  @Override
+  public void rmvFavorite(Usuario usuario, Quadro quadro) {
+    for (Quadro q : usuario.getFavoritos()) {
+      if (Objects.equals(q.getId(), quadro.getId())) {
+        usuario.getFavoritos().remove(q);
+        break;
+      }
+    }
     repository.save(usuario);
   }
 

@@ -52,6 +52,11 @@ public class QuadroController {
     service.favorite(id);
   }
 
+  @DeleteMapping("/favorite/{id}")
+  public void unfavorite(@PathVariable String id) {
+    service.unfavorite(id);
+  }
+
   @PostMapping("/share")
   public void share(@Valid @RequestBody CompartilhamentoDTO comp) {
     service.share(comp);
