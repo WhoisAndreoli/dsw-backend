@@ -117,13 +117,6 @@ public class UsuarioService implements IUsuarioService {
 
   @Override
   public void addFavorite(Usuario usuario, Quadro quadro) {
-
-    for (Quadro q : usuario.getFavoritos()) {
-      if (Objects.nonNull(q) && Objects.equals(q.getId(), quadro.getId())) {
-        throw new ErrorException("O quadro já esta na lista de favorito");
-      }
-    }
-
     usuario.getFavoritos().add(quadro);
     repository.save(usuario);
   }
