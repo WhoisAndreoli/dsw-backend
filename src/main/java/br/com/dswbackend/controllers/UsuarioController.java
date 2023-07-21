@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.dswbackend.dtos.ColecaoDTO;
+import br.com.dswbackend.dtos.Login;
 import br.com.dswbackend.dtos.RecuperarSenha;
 import br.com.dswbackend.dtos.TrocarSenha;
 import br.com.dswbackend.dtos.UsuarioRequest;
@@ -34,7 +35,7 @@ public class UsuarioController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<Void> login() {
+  public ResponseEntity<Void> login(@RequestBody @Valid Login login) {
     return ResponseEntity.ok().body(null);
   }
 
@@ -44,8 +45,8 @@ public class UsuarioController {
   }
 
   @PostMapping("/forgot/{email}")
-  public String forgotPassword(@PathVariable String email) {
-    return service.forgotPassword(email);
+  public void forgotPassword(@PathVariable String email) {
+    service.forgotPassword(email);
   }
 
   @PostMapping("/reset")

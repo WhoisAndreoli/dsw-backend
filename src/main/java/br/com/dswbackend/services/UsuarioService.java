@@ -60,7 +60,7 @@ public class UsuarioService implements IUsuarioService {
   }
 
   @Override
-  public String forgotPassword(String email) {
+  public void forgotPassword(String email) {
     if (repository.findByEmail(email).isEmpty()) {
       throw new ErrorException("Usuario não cadastrado");
     }
@@ -68,7 +68,6 @@ public class UsuarioService implements IUsuarioService {
 
     String text = String.format("http://localhost:8080/login/reset?expiration=%s&email=%s", expiracao, email);
     emailService.sendEmail(email, text);
-    return text;
   }
 
   @Override

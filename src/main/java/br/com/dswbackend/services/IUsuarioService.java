@@ -16,7 +16,7 @@ public interface IUsuarioService extends UserDetailsService {
 
   UsuarioResponse get();
 
-  String forgotPassword(String email);
+  void forgotPassword(String email);
 
   UsuarioResponse createNewPassword(RecuperarSenha form);
 

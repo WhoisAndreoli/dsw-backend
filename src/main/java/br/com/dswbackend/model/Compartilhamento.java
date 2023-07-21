@@ -12,6 +12,9 @@ public class Compartilhamento {
     this.editavel = editavel;
   }
 
+  public Compartilhamento() {
+  }
+
   public Quadro getQuadro() {
     return quadro;
   }
