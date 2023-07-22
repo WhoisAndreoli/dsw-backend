@@ -40,7 +40,7 @@ O objetivo desse trabalho é o desenvolvimento de um aplicação Web similar ao 
 
 #### **SMTP:**
 
-    É preciso adicionar um usuario e senha nas configurações do smtp no arquivo application.yml.
+* É preciso adicionar um usuario e senha nas configurações do smtp no arquivo application.yml.
 
 
 #### **Execução:**
