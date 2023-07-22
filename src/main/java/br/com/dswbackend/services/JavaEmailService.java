@@ -16,7 +16,7 @@ public class JavaEmailService implements IEmailService {
   @Override
   public void sendEmail(String toEmail, String text) {
     SimpleMailMessage message = new SimpleMailMessage();
-    message.setFrom("trabalhodegrupoti@gmail.com");
+    message.setFrom("${APP_USERNAME}");
     message.setTo(toEmail);
     message.setText(text);
     message.setSubject("Recuperação de senha");
