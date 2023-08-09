@@ -66,7 +66,7 @@ public class UsuarioService implements IUsuarioService {
     }
     String expiracao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(1).toString().substring(0, 35);
 
-    String text = String.format("http://localhost:8080/login/reset?expiration=%s&email=%s", expiracao, email);
+    String text = String.format("http://localhost:4200/reset?expiration=%s&email=%s", expiracao, email);
     emailService.sendEmail(email, text);
   }
 
